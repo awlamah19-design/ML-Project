@@ -23,16 +23,17 @@ based on their academic, demographic, and economic factors.
 st.sidebar.header("Student Information")
 st.sidebar.markdown("Please fill in all the fields below:")
 
-# Load models with error handling
+# Load models with error handling (FIXED: no "models/" folder)
 @st.cache_resource
 def load_models():
     try:
-        model = joblib.load("models/best_model.pkl")
-        scaler = joblib.load("models/scaler.pkl")
-        encoder = joblib.load("models/label_encoder.pkl")
+        model = joblib.load("best_model.pkl")
+        scaler = joblib.load("scaler.pkl")
+        encoder = joblib.load("label_encoder.pkl")
         return model, scaler, encoder
-    except FileNotFoundError:
-        st.error("Model files not found! Please ensure 'models' folder contains best_model.pkl, scaler.pkl, and label_encoder.pkl")
+    except FileNotFoundError as e:
+        st.error(f"Model files not found! Error: {e}")
+        st.info("Please ensure best_model.pkl, scaler.pkl, and label_encoder.pkl are in the same directory as app.py")
         return None, None, None
 
 # Create input fields function
@@ -127,7 +128,7 @@ def main():
     
     if model is None:
         st.warning("Please ensure you have trained and saved your models first!")
-        st.info("Run your Jupyter notebook to generate the model files in the 'models' folder.")
+        st.info("The model files (best_model.pkl, scaler.pkl, label_encoder.pkl) should be in the same folder as app.py")
         return
     
     # Create input fields
